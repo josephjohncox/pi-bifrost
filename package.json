@@ -24,14 +24,19 @@
 		"LICENSE"
 	],
 	"bin": {
-		"pi-bifrost": "./bin/pi-bifrost"
+		"pi-bifrost": "bin/pi-bifrost.js"
 	},
 	"exports": {
 		".": "./src/index.ts"
 	},
-	"keywords": ["pi-package", "bifrost"],
+	"keywords": [
+		"pi-package",
+		"bifrost"
+	],
 	"pi": {
-		"extensions": ["./src/index.ts"]
+		"extensions": [
+			"./src/index.ts"
+		]
 	},
 	"scripts": {
 		"test": "bun test"
