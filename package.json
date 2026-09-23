@@ -1,6 +1,6 @@
 {
 	"name": "@josephjohncox/pi-bifrost",
-	"version": "0.1.0",
+	"version": "0.1.1",
 	"description": "Bifrost as a native Pi model provider: live catalog, API routing, session refresh",
 	"type": "module",
 	"license": "MIT",
