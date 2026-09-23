@@ -1,0 +1,28 @@
+{
+	"name": "pi-bifrost",
+	"version": "0.1.0",
+	"description": "Bifrost as a native Pi model provider: live catalog, API routing, session refresh",
+	"type": "module",
+	"license": "MIT",
+	"bin": {
+		"pi-bifrost": "./src/cli.ts"
+	},
+	"exports": {
+		".": "./src/index.ts"
+	},
+	"keywords": ["pi-package", "bifrost"],
+	"pi": {
+		"extensions": ["./src/index.ts"]
+	},
+	"scripts": {
+		"test": "bun test"
+	},
+	"dependencies": {
+		"jsonc-parser": "^3.3.1",
+		"zod": "^4.1.5"
+	},
+	"peerDependencies": {
+		"@earendil-works/pi-ai": "*",
+		"@earendil-works/pi-coding-agent": "*"
+	}
+}
