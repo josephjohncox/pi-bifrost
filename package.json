@@ -1,40 +1,10 @@
 {
 	"name": "@josephjohncox/pi-bifrost",
 	"version": "0.1.0",
-	"description": "Bifrost as a native Pi model provider: live catalog, API routing, session refresh",
-	"type": "module",
-	"license": "MIT",
 	"author": "josephjohncox",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/josephjohncox/pi-bifrost.git"
-	},
-	"bugs": {
-		"url": "https://github.com/josephjohncox/pi-bifrost/issues"
-	},
-	"homepage": "https://github.com/josephjohncox/pi-bifrost#readme",
-	"publishConfig": {
-		"access": "public",
-		"provenance": true
-	},
-	"files": [
-		"src",
-		"index.ts",
-		"README.md",
-		"LICENSE"
-	],
-	"bin": {
-		"pi-bifrost": "./src/cli.ts"
-	},
-	"exports": {
-		".": "./src/index.ts"
-	},
-	"keywords": ["pi-package", "bifrost"],
-	"pi": {
-		"extensions": ["./src/index.ts"]
-	},
-	"scripts": {
-		"test": "bun test"
 	},
 	"dependencies": {
 		"jsonc-parser": "^3.3.1",
@@ -43,5 +13,35 @@
 	"peerDependencies": {
 		"@earendil-works/pi-ai": "*",
 		"@earendil-works/pi-coding-agent": "*"
-	}
+	},
+	"exports": {
+		".": "./src/index.ts"
+	},
+	"bin": {
+		"pi-bifrost": "./src/cli.ts"
+	},
+	"bugs": {
+		"url": "https://github.com/josephjohncox/pi-bifrost/issues"
+	},
+	"description": "Bifrost as a native Pi model provider: live catalog, API routing, session refresh",
+	"files": [
+		"src",
+		"index.ts",
+		"README.md",
+		"LICENSE"
+	],
+	"homepage": "https://github.com/josephjohncox/pi-bifrost#readme",
+	"keywords": ["pi-package", "bifrost"],
+	"license": "MIT",
+	"pi": {
+		"extensions": ["./src/index.ts"]
+	},
+	"publishConfig": {
+		"access": "public",
+		"provenance": true
+	},
+	"scripts": {
+		"test": "bun test"
+	},
+	"type": "module"
 }
