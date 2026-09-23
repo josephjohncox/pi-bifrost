@@ -57,7 +57,7 @@ On factory load and every `session_start` (`startup` / `reload` / `new` / `resum
 - `nemotron-nano-12b-v2` is text-only
 - `models.json` `modelOverrides` / `exclude` always win
 
-## CLI (optional, for models.json / Zed)
+## CLI
 
 ```bash
 pi-bifrost list
@@ -65,4 +65,26 @@ pi-bifrost sync
 pi-bifrost zed
 ```
 
-If this provider is loaded, drop the `models` arrays from `models.json` or they replace the live list.
+`sync` only touches `~/.pi/agent/models.json` connection fields. If this provider is loaded, do not put a `models` array on `providers.bifrost`.
+
+## Zed
+
+`pi-bifrost zed` writes Zed's **own** LLM providers (Agent / inline model picker). It is not ACP and not the Pi TUI.
+
+It updates `~/.config/zed/settings.json`:
+
+| Key | Endpoint |
+|---|---|
+| `language_models.openai_compatible["Bifrost - OpenAI"]` | `{gateway}/v1` |
+| `language_models.anthropic_compatible["Bifrost - Anthropic"]` | `{gateway}/anthropic` |
+
+Each `available_models` row gets `max_tokens` (context), `max_output_tokens` (generation cap), and wire capabilities from the live catalog.
+
+Thinking in Zed's UI is a settings flag, not a catalog field:
+
+- OpenAI-compatible: Zed hides thinking unless `reasoning_effort` is **not** `none`. This writer sets `"high"` for reasoning models. That is a single default effort, not Pi's `xhigh` / `max` ladder.
+- Anthropic-compatible: set `"mode": { "type": "adaptive" }` or Zed treats the model as non-thinking. Haiku 3 is left without a mode.
+
+The command also refreshes any existing openai/anthropic-compatible entry that already points at the same gateway URL (or has no URL yet), so leftover aliases stay in sync.
+
+Reload Zed after `pi-bifrost zed`. Pick **Bifrost - OpenAI** or **Bifrost - Anthropic** in the model dropdown.

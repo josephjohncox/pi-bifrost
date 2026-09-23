@@ -70,9 +70,9 @@ export function formatPiList(catalog: BuiltCatalog): string {
 	return lines.join("\n");
 }
 
-function zedCapabilities(name: string, kind: "openai" | "anthropic"): Record<string, unknown> {
-	if (kind === "anthropic") return { tools: true, images: true, prompt_caching: false };
-	const responses = /gpt-5\.6|gpt-6[.-]astra|grok-4[.-](3|6)/i.test(name);
+function zedCapabilities(model: PiModel): Record<string, unknown> {
+	if (model.api === "anthropic-messages") return { tools: true, images: true, prompt_caching: false };
+	const responses = model.api === "openai-responses";
 	return {
 		tools: true,
 		images: true,
@@ -113,8 +113,8 @@ export function applyZedSettings(source: string, catalog: BuiltCatalog, config: 
 		custom_headers: { ...MCP_TOOLS_HEADER },
 		available_models: catalog.anthropic.map((model) => zedAnthropic(model)),
 	};
-	openaiCompatible[openaiName] = openaiProvider;
-	anthropicCompatible[anthropicName] = anthropicProvider;
+	assignSameGateway(openaiCompatible, openaiName, openaiProvider);
+	assignSameGateway(anthropicCompatible, anthropicName, anthropicProvider);
 
 	let next = source;
 	const formatting = { formattingOptions: { insertSpaces: true, tabSize: 2, eol: "\n" } };
@@ -129,24 +129,39 @@ export function applyZedSettings(source: string, catalog: BuiltCatalog, config: 
 	return next;
 }
 
+function assignSameGateway(
+	map: Record<string, unknown>,
+	name: string,
+	provider: Record<string, unknown>,
+): void {
+	const want = String(provider.api_url ?? "");
+	map[name] = provider;
+	for (const [key, value] of Object.entries(map)) {
+		if (key === name || !value || typeof value !== "object") continue;
+		const url = String((value as { api_url?: unknown }).api_url ?? "");
+		if (!url || url === want) map[key] = provider;
+	}
+}
+
 function zedOpenAi(model: PiModel): Record<string, unknown> {
 	return {
 		name: model.id,
 		max_tokens: model.contextWindow,
 		max_output_tokens: model.maxTokens,
+		// Zed hides thinking unless this is a non-none effort.
 		reasoning_effort: model.reasoning ? "high" : "none",
-		capabilities: zedCapabilities(model.id, "openai"),
+		capabilities: zedCapabilities(model),
 	};
 }
 
 function zedAnthropic(model: PiModel): Record<string, unknown> {
-	const adaptive = /claude-(opus|sonnet)-(4|5)|claude-fable-5/i.test(model.name + model.id);
+	const haiku3 = /claude-3-haiku/i.test(`${model.id} ${model.name}`);
 	return {
 		name: model.id.split("/").pop() ?? model.id,
 		max_tokens: model.contextWindow,
 		max_output_tokens: model.maxTokens,
-		...(adaptive ? { mode: { type: "adaptive" } } : {}),
-		capabilities: zedCapabilities(model.id, "anthropic"),
+		...(model.reasoning && !haiku3 ? { mode: { type: "adaptive" } } : {}),
+		capabilities: zedCapabilities(model),
 	};
 }
 
