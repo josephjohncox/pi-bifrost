@@ -14,15 +14,17 @@ Routing is by **vendor prefix** from `alias` (`anthropic.claude-…`, `us-gov.xa
 
 ## Install
 
-Private repo: `git@github.com:josephjohncox/pi-bifrost.git`
-
 ```bash
-cd vendor/pi-bifrost
-bun install
-ln -sfn "$(pwd)" ~/.pi/agent/extensions/pi-bifrost
+pi install npm:@josephjohncox/pi-bifrost
 ```
 
-Or `pi install /absolute/path/to/pi-bifrost`.
+Or clone and link:
+
+```bash
+git clone https://github.com/josephjohncox/pi-bifrost.git
+cd pi-bifrost && bun install
+ln -sfn "$(pwd)" ~/.pi/agent/extensions/pi-bifrost
+```
 
 Connection lives in `~/.pi/agent/models.json` — same file Pi already uses. Do not add a `models` array; that replaces the live catalog. Overrides use `modelOverrides`:
 
